@@ -1,0 +1,28 @@
+{
+  "name": "torcs-client-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/keypress": "^2.0.28",
+    "@types/node": "^6.0.57",
+    "dgram": "^1.0.1"
+  },
+  "dependencies": {
+    "@types/ws": "0.0.37",
+    "canvas-gauges": "^2.1.1",
+    "fs": "0.0.1-security",
+    "http-server": "^0.9.0",
+    "httpdispatcher": "^2.0.1",
+    "keypress": "^0.2.1",
+    "path": "^0.12.7",
+    "typed-dgram": "git+https://github.com/weswigham/typed-dgram.git",
+    "ws": "^1.1.1"
+  }
+}
