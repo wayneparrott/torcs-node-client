@@ -1,5 +1,5 @@
 
-import { TorcsMessage } from "./TorcsMessage";
+import { SimMessage } from "./SimMessage";
 
 //sensor data message
 //[ "", 
@@ -45,7 +45,7 @@ export class SensorData {
   private trackEdgeSensorsData : number[];
   private wheelSpinVelocityData : number[];
 
-  constructor(msg: TorcsMessage) {
+  constructor(msg: SimMessage) {
     this.data = msg.data;
   }
 
@@ -104,8 +104,15 @@ export class SensorData {
   }
   
   toString(): string {
-    return "{angle: " + this.angle + ", speedX: " + this.speedX +
-           ", rpm:" + this.rpm + ", trackPos: " + this.trackPos +
-           ", damage: " + this.damage + "}";
+    let msg: string =  "{angle: " + (this.angle * 180/Math.PI).toFixed(1) + ", speedX: " + this.speedX.toFixed(1) +
+           ", rpm:" + this.rpm + ", trackPos: " + this.trackPos.toFixed(1) +
+           ", damage: " + this.damage + "\n";
+    let x = "     ";
+    for ( let i:number = 0; i < 20;  i++) {
+        x += Math.round(this.trackEdgeSensors[i]) + " ";
+        if (i == 9) x += "\n    ";
+    }
+    msg += x + "}";
+    return msg;
   }
 }

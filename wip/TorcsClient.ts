@@ -1,6 +1,6 @@
 
 
-import {SocketHandler} from "./SocketHandler";
+import {SocketHandler} from "./SocketHandler"; 
 
 class TorcsClient {
   static HOST: string = 'localhost';

@@ -10,19 +10,21 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/keypress": "^2.0.28",
+    "@types/keypress": "^2.0.30",
     "@types/node": "^6.0.57",
-    "dgram": "^1.0.1"
+    "dgram": "^1.0.1",
+    "typescript": "^2.7.2"
   },
   "dependencies": {
     "@types/ws": "0.0.37",
     "canvas-gauges": "^2.1.1",
     "fs": "0.0.1-security",
     "http-server": "^0.9.0",
-    "httpdispatcher": "^2.0.1",
+    "httpdispatcher": "^2.1.2",
     "keypress": "^0.2.1",
+    "node": "^9.8.0",
     "path": "^0.12.7",
-    "typed-dgram": "git+https://github.com/weswigham/typed-dgram.git",
+    "tty": "^1.0.1",
     "ws": "^1.1.1"
   }
 }
