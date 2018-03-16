@@ -3,22 +3,24 @@
     "target": "ES5",
     "module": "CommonJS",
     "moduleResolution": "node",
-    //"sourceRoot": "./src",
+    "sourceRoot": "./src, ./www",
     "lib": [
       "es2015.promise",
       "es2015"
     ],
     "typeRoots": [
-      "../node_modules/@types"
+      "node_modules/@types"
     ],
     "sourceMap": true,
-    "outDir": "../build"
+    "outDir": "build"
   },
   "exclude": [
-    "../node_modules",
-    "../build"
+    "node_modules",
+    "build"
   ],
   "compileOnSave": true,
-
-  "outDir": "../build"
+  "include": [
+    "src"
+  ],
+  "outDir": "./build"
 }
