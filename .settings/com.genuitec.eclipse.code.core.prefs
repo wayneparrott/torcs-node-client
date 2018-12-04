@@ -1,0 +1,4 @@
+buildMode=ALWAYS
+eclipse.preferences.version=1
+excludePatterns=**/*-*.*.*.js,**/*.min.js,**/.*,.*,bin,bower_components,dist,node_modules,out,target,vendor,wip/**/*.ts,
+includePatterns=src/**/*.ts,

@@ -24,6 +24,37 @@ import { SimMessage } from "./SimMessage";
 //95-100  focus -1 -1 -1 -1 -1
 //]
 
+
+
+
+// (angle -0.0010441)
+// (curLapTime -0.382)
+// (damage 0)
+// (distFromStart 3598.45)
+// (distRaced 0)
+// (fuel 94)
+// (gear 0)
+// (lastLapTime 0)
+// (opponents 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200)
+// (racePos 1)
+// (rpm 2463.03)
+// (speedX -0.0187696)
+// (speedY 0.0280653)
+// (speedZ 0.000175783)
+// (track 3.99991 4.13986 4.61592 5.65083 7.98539 11.6707 15.748 31.5162 110.847 64.7396 45.9686 35.2198 27.6343 22.3446 15.938 11.3257 9.24328 8.28462 8.00009)
+// (trackPos 0.333348)
+// (wheelSpinVel 0 0 -2.01446 2.0326)
+// (z 0.345262)
+// (focus -1 -1 -1 -1 -1)
+// (x 446.682)
+// (y 51.3348)
+// (roll -1.34061e-05)
+// (pitch -0.00719975)
+// (yaw 0.00104836)
+// (speedGlobalX -0.00522146)
+// (speedGlobalY 0.00779077)
+
+
 export class SensorData {
 
   private static ANGLE_DATA_IDX: number = 2;
@@ -37,7 +68,7 @@ export class SensorData {
   private static SPEEDX_DATA_IDX: number = 59;
   private static TRACKSENSORS_DATA_IDX: number = 64; //this is off by +1 to the doc above
   private static TRACKPOS_DATA_IDX: number = 85;
-  private static WHEELSPINVELOCITY_DATA_IDX: number = 85;
+  private static WHEELSPINVELOCITY_DATA_IDX: number = 87;
   
   
   private data: string[];
@@ -85,7 +116,7 @@ export class SensorData {
     if (!this.trackEdgeSensorsData) {
       this.trackEdgeSensorsData = new Array<number>(19);
       for (let i: number=0; i<19; i++) {
-        let val:number = parseFloat(this.data[SensorData.TRACKSENSORS_DATA_IDX + i]);
+        let val:number = parseFloat(this.data[SensorData.TRACKSENSORS_DATA_IDX + i + 1]);
         this.trackEdgeSensorsData[i]=val;
       }
     }
@@ -108,7 +139,7 @@ export class SensorData {
            ", rpm:" + this.rpm + ", trackPos: " + this.trackPos.toFixed(1) +
            ", damage: " + this.damage + "\n";
     let x = "     ";
-    for ( let i:number = 0; i < 20;  i++) {
+    for ( let i:number = 0; i < 19;  i++) {
         x += Math.round(this.trackEdgeSensors[i]) + " ";
         if (i == 9) x += "\n    ";
     }

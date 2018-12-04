@@ -1,24 +1,16 @@
 
-import {SimAction} from './SimAction'
-import {SensorData} from './SensorData'
+import { SimAction } from './SimAction'
+import { SensorData } from './SensorData'
 
 export abstract class Driver {
-  readonly name: string;
-  constructor(name: string) {
-    this.name = name;
+
+  constructor(readonly name: string) {
   }
 
   abstract control(sensors: SensorData): SimAction;
-  abstract shutdown(): void;
   abstract reset(): void;
-
-  requestReset(): SimAction {
-    // called at the beginning of each new trial
-    let action = new SimAction();
-    action.restartRace = true;
-    return action;
-  }
-
+  abstract shutdown(): void;
+  
   initDistanceMeasureAngles(): number[] {
     let angles: number[] = new Array<number>(19);
     for (let i = 0; i < 19; ++i)
