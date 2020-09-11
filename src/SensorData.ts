@@ -76,6 +76,8 @@ export class SensorData {
   private trackEdgeSensorsData : number[];
   private wheelSpinVelocityData : number[];
 
+  private maxDistanceSensorIdx = -1;
+
   constructor(msg: SimMessage) {
     this.data = msg.data;
   }
@@ -88,6 +90,10 @@ export class SensorData {
     return Number(this.data[SensorData.CURLAPTIME_DATA_IDX]);
   }
   
+  get distanceFromStart(): number {
+    return Number(this.data[SensorData.DISTFROMSTART_DATA_IDX]);
+  }
+
   get distanceRaced() : number {
     return Number(this.data[SensorData.DISTRACED_DATA_IDX]);
   }
@@ -132,6 +138,43 @@ export class SensorData {
       }
     }
     return this.wheelSpinVelocityData;
+  }
+
+  get maxDistanceSensor(): number {
+    if (this.maxDistanceSensorIdx > -1) {
+      return this.maxDistanceSensorIdx;
+    }
+
+    // find max distance sensor
+    let maxIdx = 0;
+    for (let i = 1; i < this.trackEdgeSensors.length; i++) {
+      if (this.trackEdgeSensors[i] > this.trackEdgeSensors[maxIdx]) {
+        maxIdx = i;
+      }
+    }
+    this.maxDistanceSensorIdx = maxIdx;
+
+    return this.maxDistanceSensorIdx;
+  }
+
+  /**
+   * Get the maximum distance sensor reading in meters from trackEdgeData.
+   * 
+   * @returns Maximum distance reading in meters.
+   */
+  get maxDistance(): number {
+    return this.trackEdgeSensorsData[this.maxDistanceSensor];
+  }
+
+  /**
+   * Return sensor angle in degrees from vechicle longtitudial centerline to sensor. 
+   * Positive angles in clockwise direction. Negative angles in counter-clockwise 
+   * direction.
+   * 
+   * @returns Angle in degress to sensor
+   */
+  get maxDistanceAngle(): number {
+    return this.maxDistanceSensor * 10 - 90.0;
   }
   
   toString(): string {

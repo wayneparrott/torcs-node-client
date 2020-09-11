@@ -1,8 +1,8 @@
 
 
-import {SimAction} from '../SimAction'
-import {Driver} from '../Driver'
-import {SensorData} from '../SensorData'
+import { SimAction } from '../SimAction'
+import { Driver } from '../Driver'
+import { SensorData } from '../SensorData'
 
 export class SimpleDriver extends Driver {
   readonly straightTargetSpeed: number = 100;
@@ -12,7 +12,7 @@ export class SimpleDriver extends Driver {
 
   control(sensors: SensorData): SimAction {
 
-    let action = new SimAction(); 
+    let action = new SimAction();
     action.gear = sensors.gear;
 
     // if (sensors.damage > 50 || Math.abs(this.curSteering) > 0.9) {
@@ -23,7 +23,7 @@ export class SimpleDriver extends Driver {
     let targetSpeed = isStraight ? this.straightTargetSpeed : this.turnTargetSpeed;
     console.log('targetSpeed', targetSpeed);
 
-    if (sensors.gear == 0) {
+    if (sensors.gear < 1) {
       action.gear = 1;
     }
 
@@ -64,9 +64,9 @@ export class SimpleDriver extends Driver {
     //      }
     //      action.steering = Steering;
     //    }
-    
+
     if (Math.abs(sensors.angle) < 0.087) {
-      action.steering = 0; 
+      action.steering = 0;
     } else if (sensors.angle < 0) { //moving left
       let BASE_TURN: number = -0.1;
       action.steering = BASE_TURN;  //turn right
@@ -110,7 +110,7 @@ export class SimpleDriver extends Driver {
   reset(): void {
 
   }
-  
+
   shutdown(): void {
 
   }

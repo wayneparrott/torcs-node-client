@@ -1,5 +1,5 @@
 
 export let Settings = {
-    verbose: true
+    verboseLevel: 0
 }
 
