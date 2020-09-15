@@ -72,6 +72,13 @@ The velocity and acceleration control (accelerator, brake and gear) are computed
 The result is a reasonably performant algorithm with additional room for such a simple controller. Because the steering controller uses the longest sensor range reading the car has a tendency to drive directly towards the apex of a turn rather than curve in to it. Additionally, over braking occurs on some turn segments. In such cases coasting or more liberal acceleration control would improve corner speed. A big future enhancement is to introduce a secondary controller that monitors and automatically tunes additional steering and acceleration parameters as the car learns the track. 
 
 
+# Resources
+1. [TORCS](http://torcs.sourceforge.net/index.php)
+2. [SCR Manual](https://arxiv.org/pdf/1304.1672.pdf)
+3. [SCR code repo](https://sourceforge.net/projects/cig/files/SCR%20Championship/)
+4. [TORCS with SCR Patch](https://github.com/fmirus/torcs-1.3.7)
+5. [Pure Pursuit Algorithm](https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf)
+
 
 
 
