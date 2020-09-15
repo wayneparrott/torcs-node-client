@@ -2,6 +2,7 @@
 torcs-node-client is Node.js client for running autonomous driver bots on [The Open Race Car Simulator](http://torcs.sourceforge.net/index.php) (TORCS).
 
 [![Youtube Video](screenshot.png)](https://youtu.be/il-f4rk9Cic)
+*Click for Youtube Video*
 
 # The Basics
 TORCS is designed to enable pre-programmed AI drivers to race against one another, while allowing the user to control a vehicle using either a keyboard, mouse, or wheel input. In 2013, a patch was created to extend TORCS to support externally controlled robot drivers as part of the [Simulated Car Racing (SCR) Championship](https://arxiv.org/pdf/1304.1672.pdf). The torcs-node-client uses the SCR network protocol to simulate a driver. 
@@ -70,9 +71,6 @@ The velocity and acceleration control (accelerator, brake and gear) are computed
 
 ## Areas for Improvement
 The result is a reasonably performant algorithm with additional room for such a simple controller. Because the steering controller uses the longest sensor range reading the car has a tendency to drive directly towards the apex of a turn rather than curve in to it. Additionally, over braking occurs on some turn segments. In such cases coasting or more liberal acceleration control would improve corner speed. A big future enhancement is to introduce a secondary controller that monitors and automatically tunes additional steering and acceleration parameters as the car learns the track. 
-
-# Video
-![![Youtube Video]()](https://youtu.be/il-f4rk9Cic)
 
 
 # Resources
