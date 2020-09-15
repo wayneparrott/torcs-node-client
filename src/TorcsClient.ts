@@ -27,6 +27,10 @@ enum SimState {
 	DISCONNECTED, CONNECTING, CONNECTED, ERROR
 }
 
+const DEFAULT_MAX_DAMAGE = 50;
+export enum MaxDamagePolicy { STOP_PROCESS, RESTART_RACE };
+export type MaxDamage = {maxDamage?: number, policy?: MaxDamagePolicy};
+
 export class TorcsClient implements SimListener {
 	static TORCS_DEFAULT_DRIVER = "zirk";
 	static TORCS_SIM_HOST = 'localhost';
@@ -34,20 +38,24 @@ export class TorcsClient implements SimListener {
 
 	private simCommunicator: SimCommunicator;
 	private driver: Driver;
-	private processMsgsEnabled: boolean = false;
+  private processMsgsEnabled: boolean = false;
+  private maxDamage: MaxDamage;
 
-	constructor(driver = TorcsClient.TORCS_DEFAULT_DRIVER,
-		host = TorcsClient.TORCS_SIM_HOST, port = TorcsClient.TORCS_SIM_PORT,
-		verboseLevel = 0) {
+	constructor(
+      host = TorcsClient.TORCS_SIM_HOST, 
+      port = TorcsClient.TORCS_SIM_PORT,
+      maxDamage: MaxDamage = {maxDamage: DEFAULT_MAX_DAMAGE, policy: MaxDamagePolicy.RESTART_RACE},
+      verboseLevel = 0) {
+    this.maxDamage = maxDamage;
 		Settings.verboseLevel = verboseLevel;
 		this.initKeys();
 		this.simCommunicator = new SimCommunicator(this, host, port);
 
 		this.driver = new PurePursuitDriver('zirk');
-
 	}
 
 	start(): void {
+    this.displayCommands();
 		this.simCommunicator.connect();
 		this.processMsgsEnabled = true;
 	}
@@ -58,14 +66,12 @@ export class TorcsClient implements SimListener {
 
 	async restart() {
 		this.processMsgsEnabled = false;
-		let restartAction = new SimAction();
+    
+    let restartAction = new SimAction();
 		restartAction.restartRace = true;
-		this.simCommunicator.sendAction(restartAction);
-		await Utils.createDelay(1000);
-		this.simCommunicator.disconnect();
-		await Utils.createDelay(1000);
-		this.simCommunicator =
-			new SimCommunicator(this, TorcsClient.TORCS_SIM_HOST, TorcsClient.TORCS_SIM_PORT);
+    this.simCommunicator.sendAction(restartAction);
+    
+		await Utils.delay(1000);
 		this.start();
 	}
 
@@ -74,11 +80,16 @@ export class TorcsClient implements SimListener {
 		if (msg.type != SimMessageType.DATA) return;
 
 		let sensorData: SensorData = new SensorData(msg);
-		if (Settings.verboseLevel === 1) console.log('sensors', sensorData.toString());
-		if (sensorData.damage > 50) { //|| Math.abs(action.curSteering) > 0.9) {
-			console.log("Max Damage Exceeded", sensorData.damage);
-			process.exit(-1);
-			return;
+		if (Settings.verboseLevel) console.log('sensors', sensorData.toString());
+		if (sensorData.damage > this.maxDamage.maxDamage) { 
+      if (this.maxDamage.policy == MaxDamagePolicy.STOP_PROCESS) {
+        console.log("Max Damage Exceeded", sensorData.damage, ' terminating process');
+        process.exit(-1);
+      } else { //this.maxDamage.policy == MaxDamagePolicy.RESTART_RACE) 
+        console.log("Max Damage Exceeded", sensorData.damage, ' restarting race');
+        this.restart();
+        return;
+      } 
 		}
 		let action: SimAction = this.driver.control(sensorData);
 
@@ -92,7 +103,6 @@ export class TorcsClient implements SimListener {
 
 		//process.stdin.setRawMode(true);
 		if (tty.isatty(1)) {
-			//console.log('tty');
 			let readStream: tty.ReadStream = <tty.ReadStream>process.stdin;
 			readStream.setRawMode(true);
 		}
@@ -101,16 +111,30 @@ export class TorcsClient implements SimListener {
 	}
 
 	processKeys(ch: string, key: any): void {
-		if (Settings.verboseLevel === 2) console.log('got "keypress"', key);
+    // if (Settings.verboseLevel === 2) console.log('got "keypress"', key);
+    
 		if (key.name == 'r') {    //reset
 			this.restart();
 		} else if (key.name == 'v') {    //toggle verbose mode
-			Settings.verboseLevel = Settings.verboseLevel === 2 ? 0 : Settings.verboseLevel + 1;
+      Settings.verboseLevel = ++Settings.verboseLevel % 3;
+      if (Settings.verboseLevel == 0) this.displayCommands();
+		} else if (key.name == 'h') {    //display this commands
+			this.displayCommands();
 		} else if (key && key.ctrl && key.name == 'c') {
 			this.stop();
 			process.exit();
 		}
-	}
+  }
+  
+  displayCommands() {
+    // console.log('------------------------------');
+    console.log('Commands');
+    console.log(' r     - restart race');
+    console.log(' v     - toggle verbose level');
+    console.log(' h     - display commands info')
+    console.log(' ctl+c - exit')
+    console.log('------------------------------');
+  }
 
 
 };

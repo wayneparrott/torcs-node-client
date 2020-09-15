@@ -1,0 +1,78 @@
+
+enum TURN_DIRECTION { LEFT, STRAIGHT, RIGHT };
+
+type TurnSegment = { location: number, direction: TURN_DIRECTION };
+
+class TurnProfile {
+
+  private mruIdx = 0;
+
+  constructor(private segments: Array<TurnSegment>) {
+    if (!segments || segments.length == 0) {
+      throw new Error('Invalid parameter, expected TurnSegment[]');
+    }
+  }
+
+  size(): number {
+    return this.segments.length + 1;
+  }
+
+  getSegmentByIndex(idx: number): TurnSegment {
+    if (idx < 0 || idx > this.size() - 1) {
+      throw new RangeError('Invalid index');
+    }
+
+    return this.segments[idx];
+  }
+
+  find(lapDistance: number, stopIdx = -1): TurnSegment {
+    // find index of segment
+    let segment = this.getSegmentByIndex(this.mruIdx);
+    let nextSegmentIdx = (this.mruIdx + 1) % this.size();
+    let nextSegment = this.getSegmentByIndex(nextSegmentIdx);
+    if (segment.location <= lapDistance && lapDistance < nextSegment.location) {
+      return segment;
+    }
+
+    // look ahead to next segment
+    if (stopIdx == this.mruIdx) {
+      return null;
+    }
+
+    stopIdx = stopIdx == -1 ? (this.mruIdx + this.size()) % this.size() : stopIdx;
+
+    this.mruIdx = ++this.mruIdx % this.size();
+    return this.find(lapDistance, stopIdx);
+  }
+
+}
+
+class TurnProfiler {
+
+  private idx = -1;
+  private data = new Array<TURN_DIRECTION>();
+
+  get size() {
+    return this.idx + 1;
+  }
+
+  add(turn: TURN_DIRECTION, lapDistance: number) {
+    this.data[++this.idx] = turn;
+  }
+
+  creatProfile(): Array<TURN_DIRECTION> {
+    let profile = new Array<TURN_DIRECTION>();
+    let currentSegmentType;
+
+    for (let i = 0; i <= this.idx; i++) {
+      let turn = this.data
+      if (currentSegmentType != turn) {
+        profile.push(currentSegmentType);
+        currentSegmentType = turn;
+      }
+    }
+
+    return profile;
+  }
+}
+  

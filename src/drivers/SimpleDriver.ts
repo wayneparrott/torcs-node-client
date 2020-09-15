@@ -107,12 +107,4 @@ export class SimpleDriver extends Driver {
     return !this.isStraight(sensors)
   }
 
-  reset(): void {
-
-  }
-
-  shutdown(): void {
-
-  }
-
 }

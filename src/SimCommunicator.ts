@@ -25,7 +25,6 @@ export class SimCommunicator {
   private simListener: SimListener;
   readonly host: string;
   readonly port: number;
-  private verbose: boolean;
   private socket: any; //dgram.Socket;
   private state = CommState.DISCONNECTED;
 
@@ -45,17 +44,17 @@ export class SimCommunicator {
   }
 
   connect(): void {
-    if (Settings.verboseLevel===1) console.log('communicator connect: ', this.state);
+    if (Settings.verboseLevel) console.log('communicator connect: ', this.state);
 
     this.socket = dgram.createSocket('udp4');
     this.socket.
       on('listening', () => {
-        if (Settings.verboseLevel===1) console.log('communicator: listening event');
+        if (Settings.verboseLevel) console.log('communicator: listening event');
       }).
       on('message', (message: Buffer, remote: any) => { //dgram.RemoteInfo
-        if (this.state == CommState.CONNECTING)
+        if (this.state == CommState.CONNECTING) {
           this.state = CommState.CONNECTED;
-        //console.log('message event');
+        }
         this.handleSimMessage(message, remote)
       }).
       on('close', () => {
@@ -82,11 +81,11 @@ export class SimCommunicator {
   // send SIM_INIT string every 5 seconds until
   // sim communications is established
   protected async initSimCommo() {
-    if (Settings.verboseLevel===2) console.log('initcommo', this.state);
+    if (Settings.verboseLevel > 1) console.log('initcommo', this.state);
     if (this.state != CommState.CONNECTING) return;
 
     this.send(SimCommunicator.SIM_INIT);
-    await Utils.createDelay(2000);
+    await Utils.delay(2000);
     this.initSimCommo();
   }
 
@@ -95,7 +94,7 @@ export class SimCommunicator {
   }
 
   protected send(msg: string): void {
-    if (Settings.verboseLevel===1) console.log("Sending: ", msg, "\n-----------------------------");
+    if (Settings.verboseLevel) console.log("Sending: ", msg, "\n-----------------------------");
 
     let buf =  Buffer.from(msg);
     this.socket.send(buf, 0, buf.length, this.port, this.host, function (err, bytes) {
@@ -112,7 +111,7 @@ export class SimCommunicator {
     let rawMsg = buffer.toString();
     this.msgCnt++;
 
-    if (Settings.verboseLevel===2) console.log(remote.address + ':' + remote.port + ' - ' + rawMsg);
+    if (Settings.verboseLevel > 1) console.log(remote.address + ':' + remote.port + ' - ' + rawMsg);
 
     let msg: SimMessage = SimMessageParser.getInstance().parse(rawMsg);
     this.simListener.handleMessage(msg);

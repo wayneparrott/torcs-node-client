@@ -10,8 +10,6 @@ export abstract class Driver  extends EventEmitter {
   }
 
   abstract control(sensors: SensorData): SimAction;
-  abstract reset(): void;
-  abstract shutdown(): void;
 
   initDistanceMeasureAngles(): number[] {
     let angles: number[] = new Array<number>(19);

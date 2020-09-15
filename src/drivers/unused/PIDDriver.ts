@@ -1,12 +1,12 @@
 
-import { SimAction } from '../SimAction';
-import { Driver } from '../Driver';
-import { SensorData } from '../SensorData';
+import { SimAction } from '../../SimAction';
+import { Driver } from '../../Driver';
+import { SensorData } from '../../SensorData';
 import * as Controller from 'node-pid-controller';
-import { Utils } from '../Utils';
-import { Settings } from '../Settings';
+import { Utils } from '../../Utils';
+import { Settings } from '../../Settings';
 // import { ETIMEDOUT } from 'constants';
-import { Segment, SegmentProfile, SegmentFactory } from '../TrackInfo';
+import { Segment, SegmentProfile, SegmentFactory } from '../../TrackInfo';
 import { AssertionError } from 'assert';
 
 const DEFAULT_MIN_SPEED = 35;

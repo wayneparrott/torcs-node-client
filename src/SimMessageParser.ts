@@ -43,8 +43,6 @@ export class SimMessageParser {
 
   parse(msg: string): SimMessage {
     let data: string[] = msg.split(SimMessageParser.SEPARATORS);
-//console.log('parse', msg);
-//console.log('data parse', data.length);
     let type: SimMessageType;
     if (data.length > 1) {
       type = SimMessageType.DATA;
