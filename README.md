@@ -1,7 +1,7 @@
 # torcs-node-client
 torcs-node-client is Node.js client for running autonomous driver bots on [The Open Race Car Simulator](http://torcs.sourceforge.net/index.php) (TORCS).
 
-[![Youtube Video](screenshot.png)](https://youtu.be/il-f4rk9Cic)
+[![Youtube Video](screenshot.png)](https://youtu.be/il-f4rk9Cic)    
 *Click for Youtube Video*
 
 # The Basics
