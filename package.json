@@ -6,26 +6,21 @@
   "scripts": {
     "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["autonomous driver", "robot race", "TORCS driver", "pure pursuit"],
+  "author": "Wayne Parrott (http://wayneparrott.com)",
   "license": "ISC",
   "devDependencies": {
     "@types/keypress": "^2.0.30",
     "@types/node": "^14.10.1",
-    "@types/ws": "^7.2.6",
     "typescript": "^4.0.2"
   },
   "dependencies": {
     "bufferutil": "^4.0.1",
     "fs": "0.0.1-security",
-    "http-server": "^0.12.3",
-    "httpdispatcher": "^2.1.2",
     "keypress": "^0.2.1",
     "live-moving-average": "^1.0.0",
     "node-pid-controller": "^1.0.1",
     "path": "^0.12.7",
-    "tty": "^1.0.1",
-    "utf-8-validate": "^5.0.2",
-    "ws": "^7.3.1"
+    "tty": "^1.0.1"
   }
 }
