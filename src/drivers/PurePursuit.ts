@@ -107,7 +107,9 @@ export class PurePursuitDriver extends Driver {
 
     if (sensors.isOffTrack()) {
       targetAngleRad = this.computeRecoveryTargetAngle(sensors);
-      console.log('offtrack: left, targetAngleDeg: ', targetAngleRad * DEG_PER_RAD);
+      if (Settings.verboseLevel) {
+        console.log('offtrack: left, targetAngleDeg: ', targetAngleRad * DEG_PER_RAD);
+      }
     }
 
     if (Settings.verboseLevel) {
