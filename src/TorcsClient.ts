@@ -23,6 +23,8 @@ import { PurePursuitDriver } from './drivers/PurePursuit';
 
 const keypress: any = require('keypress');
 
+const DEFAULT_DRIVER_CLASS = PurePursuitDriver;
+
 enum SimState {
 	DISCONNECTED, CONNECTING, CONNECTED, ERROR
 }
@@ -38,8 +40,9 @@ export class TorcsClient implements SimListener {
 
 	private simCommunicator: SimCommunicator;
 	private driver: Driver;
-  private processMsgsEnabled: boolean = false;
+  private processMsgsEnabled = false;
   private maxDamage: MaxDamage;
+  private overrideAction: SimAction;
 
 	constructor(
       host = TorcsClient.TORCS_SIM_HOST, 
@@ -48,11 +51,18 @@ export class TorcsClient implements SimListener {
       verboseLevel = 0) {
     this.maxDamage = maxDamage;
 		Settings.verboseLevel = verboseLevel;
-		this.initKeys();
-		this.simCommunicator = new SimCommunicator(this, host, port);
+    this.initKeys();
+    this.setDriver(new DEFAULT_DRIVER_CLASS('zirk'));
+		this.simCommunicator = new SimCommunicator(this, host, port, this.driver.getSensorConfig());
+  }
+  
+  getDriver(): Driver {
+    return this.driver;
+  }
 
-		this.driver = new PurePursuitDriver('zirk');
-	}
+  setDriver(driver: Driver) {
+    this.driver = driver;
+  }
 
 	start(): void {
     this.displayCommands();
@@ -71,7 +81,8 @@ export class TorcsClient implements SimListener {
 		restartAction.restartRace = true;
     this.simCommunicator.sendAction(restartAction);
     
-		await Utils.delay(1000);
+    await Utils.delay(1000);
+    this.driver.restart(); 
 		this.start();
 	}
 
@@ -90,8 +101,19 @@ export class TorcsClient implements SimListener {
         this.restart();
         return;
       } 
-		}
+    }
+    
 		let action: SimAction = this.driver.control(sensorData);
+
+    if (action.restartRace) this.restart();
+
+    if (this.overrideAction) {
+      action = this.overrideAction;
+      if (sensorData.isOffTrack()) this.overrideAction = null;
+      if (Settings.verboseLevel) {
+        console.log('Applying override action');
+      }
+    }
 
 		this.simCommunicator.sendAction(action);
 	}
@@ -112,7 +134,8 @@ export class TorcsClient implements SimListener {
 
 	processKeys(ch: string, key: any): void {
     // if (Settings.verboseLevel === 2) console.log('got "keypress"', key);
-    
+    if (!key || !key.name) return;
+
 		if (key.name == 'r') {    //reset
 			this.restart();
 		} else if (key.name == 'v') {    //toggle verbose mode
@@ -123,7 +146,19 @@ export class TorcsClient implements SimListener {
 		} else if (key && key.ctrl && key.name == 'c') {
 			this.stop();
 			process.exit();
-		}
+		} else if (key.name == 'left') {    
+      let overrideAction = new SimAction();
+      overrideAction.accelerate = 0.0;
+      overrideAction.brake = 0.0;
+      overrideAction.steering = 0.005;
+      this.overrideAction = overrideAction;
+    } else if (key.name == 'right') {    
+      let overrideAction = new SimAction();
+      overrideAction.accelerate = 0.0;
+      overrideAction.steering = -0.01;
+      overrideAction.brake = 0.0;
+      this.overrideAction = overrideAction;
+    }
   }
   
   displayCommands() {

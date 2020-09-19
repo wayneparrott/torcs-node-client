@@ -13,18 +13,18 @@ export enum CommState {
   DISCONNECTED, CONNECTING, CONNECTED, ERROR
 }
 
-
 //todo add exception handling for network errors
 export class SimCommunicator {
-  static SIM_INIT =
-    "SCR(init " +
-    "-90.0 -75.0 -60.0 -45.0 -30.0 -20.0 -15.0 -10.0 -5.0 " +
-    "0.0 " +
-    "5.0 10.0 15.0 20.0 30.0 45.0 60.0 75.0 90.0)";
+  // static SIM_INIT =
+  //   "SCR(init " +
+  //   "-90.0 -75.0 -60.0 -45.0 -30.0 -20.0 -15.0 -10.0 -5.0 " +
+  //   "0.0 " +
+  //   "5.0 10.0 15.0 20.0 30.0 45.0 60.0 75.0 90.0)";
 
   private simListener: SimListener;
   readonly host: string;
   readonly port: number;
+  readonly sensorConfig: number[];
   private socket: any; //dgram.Socket;
   private state = CommState.DISCONNECTED;
 
@@ -33,10 +33,11 @@ export class SimCommunicator {
 
   private postStopAction: () => void;
 
-  constructor(listener: SimListener, host: string, port: number, options?: SimOptions) {
+  constructor(listener: SimListener, host: string, port: number, sensorConfig: Array<number>) {
     this.simListener = listener;
     this.host = host;
     this.port = port;
+    this.sensorConfig = sensorConfig;
   }
 
   get State(): CommState {
@@ -84,7 +85,7 @@ export class SimCommunicator {
     if (Settings.verboseLevel > 1) console.log('initcommo', this.state);
     if (this.state != CommState.CONNECTING) return;
 
-    this.send(SimCommunicator.SIM_INIT);
+    this.send(this.getInitMessage());
     await Utils.delay(2000);
     this.initSimCommo();
   }
@@ -115,6 +116,14 @@ export class SimCommunicator {
 
     let msg: SimMessage = SimMessageParser.getInstance().parse(rawMsg);
     this.simListener.handleMessage(msg);
+  }
+
+  //"SCR(init " +
+  //   "-90.0 -75.0 -60.0 -45.0 -30.0 -20.0 -15.0 -10.0 -5.0 " +
+  //   "0.0 " +
+  //   "5.0 10.0 15.0 20.0 30.0 45.0 60.0 75.0 90.0)";
+  protected getInitMessage(): string {
+    return `SCR(init ${this.sensorConfig.join(" ")})`;
   }
 }
 

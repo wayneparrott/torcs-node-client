@@ -15,10 +15,6 @@ export class SimpleDriver extends Driver {
     let action = new SimAction();
     action.gear = sensors.gear;
 
-    // if (sensors.damage > 50 || Math.abs(this.curSteering) > 0.9) {
-    //   process.exit(-1);
-    // }
-
     let isStraight = this.isStraight(sensors);
     let targetSpeed = isStraight ? this.straightTargetSpeed : this.turnTargetSpeed;
     console.log('targetSpeed', targetSpeed);
@@ -55,15 +51,6 @@ export class SimpleDriver extends Driver {
       }
       action.accelerate = 0;
     }
-
-    //    if (sensors.speedX > 2) {
-    //      if (sensors.trackPos < 0) { //right of axis
-    //        this.curSteering += 0.01;      
-    //      } else if (sensors.trackPos > 0) { //left of axis
-    //        this.curSteering -= 0.01;
-    //      }
-    //      action.steering = Steering;
-    //    }
 
     if (Math.abs(sensors.angle) < 0.087) {
       action.steering = 0;

@@ -1,6 +1,8 @@
 
 import { SimMessage } from "./SimMessage";
 
+const PI_HALF = Math.PI / 2.0;
+
 //sensor data message
 //[ "", 
 //1-2    angle, -0.00335615
@@ -66,6 +68,7 @@ export class SensorData {
   private static GEAR_DATA_IDX: number = 14;
   private static RPM_DATA_IDX: number = 57;
   private static SPEEDX_DATA_IDX: number = 59;
+  private static SPEEDY_DATA_IDX: number = 61;
   private static TRACKSENSORS_DATA_IDX: number = 64; //this is off by +1 to the doc above
   private static TRACKPOS_DATA_IDX: number = 85;
   private static WHEELSPINVELOCITY_DATA_IDX: number = 87;
@@ -106,6 +109,14 @@ export class SensorData {
     return parseFloat(this.data[SensorData.SPEEDX_DATA_IDX]);
   }
 
+  get speedY(): number {
+    return parseFloat(this.data[SensorData.SPEEDY_DATA_IDX]);
+  }
+
+  get speed(): number {
+    return Math.sqrt(Math.pow(this.speedX,2) + Math.pow(this.speedY,2));
+  }
+
   get gear(): number {
     return parseFloat(this.data[SensorData.GEAR_DATA_IDX]);
   }
@@ -116,6 +127,14 @@ export class SensorData {
 
   get trackPos(): number {    
     return parseFloat(this.data[SensorData.TRACKPOS_DATA_IDX]);
+  }
+
+  isOnTrack(): boolean {
+    return !this.isOffTrack();
+  }
+
+  isOffTrack(): boolean {
+    return Math.abs(this.trackPos) > 1.0 || Math.abs(this.angle) > PI_HALF;
   }
   
   get trackEdgeSensors(): number[] {
@@ -178,7 +197,7 @@ export class SensorData {
   }
   
   toString(): string {
-    let msg: string =  "{angle: " + (this.angle * 180/Math.PI).toFixed(1) + ", speedX: " + this.speedX.toFixed(1) +
+    let msg: string =  "{angle: " + (this.angle * 180/Math.PI).toFixed(1) + ", speed: " + this.speed.toFixed(1) +
            ", rpm:" + this.rpm + ", trackPos: " + this.trackPos.toFixed(1) +
            ", damage: " + this.damage + "\n";
     let x = "     ";
