@@ -5,11 +5,11 @@ torcs-node-client is Node.js client for running autonomous driver bots on [The O
 *Click image for Youtube Video*
 
 # The Basics
-TORCS is designed to enable pre-programmed AI drivers to race against one another, while allowing the user to control a vehicle using either a keyboard, mouse, or wheel input. In 2013, a patch was created to extend TORCS to support externally controlled robot drivers as part of the [Simulated Car Racing (SCR) Championship](https://arxiv.org/pdf/1304.1672.pdf). The torcs-node-client uses the SCR network protocol to simulate a driver. 
+TORCS is designed to enable pre-programmed AI drivers to race against one another, while allowing the user to control a vehicle using either a keyboard, mouse, or wheel input. In 2013, an enhancement was created to extend TORCS to support externally controlled robot drivers as part of the [Simulated Car Racing (SCR) Championship](https://arxiv.org/pdf/1304.1672.pdf). In this client-server configuration bots connect as clients to a TORCS simulator server.
 
 TORCS with the [SCR patch](https://github.com/fmirus/torcs-1.3.7) runs standalone in its own process to which this client connects and communicates over UDP on default port 3001. Every 20 ms TORCS sends a packet of sensor data for the simulated car and waits for commands. If no command is provided in the timeframe, the previous command is performed. This loop repeats until the race completes or your car stalls for > 5 seconds or your car crashes and sustains damage greater than the maximum damage setting. 
 
-The default driver provided by this client is based on the [Pure Pursuit algorithm](https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf).
+The torcs-node-client enables a bot implemented in JavaScript (TypeScript) to connect to a TORCS server using the SCR network protocol and control a race car. While the default driver provided by this client is based on the [Pure Pursuit algorithm](https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf) it is very easy to implement and plugin your own driver controller, see Driver.ts for the api.
 
 # Prerequisites
 You will need the following software installed:
@@ -24,7 +24,8 @@ You will need the following software installed:
 
 
 # Getting Started
-Open a command shell and `cd` to the folder that will contain your version of the torcs-node-client.
+We will be running two process, the TORCS simulator and our driver bot.
+Begin by opening   a command shell and `cd` to the folder that will contain your version of the torcs-node-client.
 
 Clone this git repo
 ```
@@ -81,6 +82,9 @@ The result is a reasonably performant algorithm with additional room for such a 
 3. [SCR code repo](https://sourceforge.net/projects/cig/files/SCR%20Championship/)
 4. [TORCS with SCR Patch](https://github.com/fmirus/torcs-1.3.7)
 5. [Pure Pursuit Algorithm](https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf)
+
+# Credits
+Thanks to the CodeMix team at [Genuitc](http://genuitec.com/). This software was developed using the [CodeMix plugin](https://marketplace.eclipse.org/content/codemix-3) for Eclipse.
 
 
 
