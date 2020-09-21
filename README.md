@@ -82,6 +82,8 @@ The result is a reasonably performant algorithm with additional room for such a 
 3. [SCR code repo](https://sourceforge.net/projects/cig/files/SCR%20Championship/)
 4. [TORCS with SCR Patch](https://github.com/fmirus/torcs-1.3.7)
 5. [Pure Pursuit Algorithm](https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf)
+6. SCR sensor input and control output cheatsheet
+![](torcs-cheat-sheet.png)
 
 # Credits
 Thanks to the CodeMix team at [Genuitc](http://genuitec.com/). This software was developed using the [CodeMix plugin](https://marketplace.eclipse.org/content/codemix-3) for Eclipse.

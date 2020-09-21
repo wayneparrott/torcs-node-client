@@ -100,25 +100,12 @@ export class PurePursuitDriver extends Driver {
   // 
   // todo: account for vehicle angle to track, currently assume parallel with track centerline
   computeSteering(sensors: SensorData, action: SimAction): void {
-    //let rawSteerAngle = 0;
 
-    let targetAngle = sensors.maxDistanceAngle;
-    let targetAngleRad = targetAngle * RAD_PER_DEG;
-
-    if (sensors.isOffTrack()) {
-      targetAngleRad = this.computeRecoveryTargetAngle(sensors);
-      if (Settings.verboseLevel) {
-        console.log('offtrack: left, targetAngleDeg: ', targetAngleRad * DEG_PER_RAD);
-      }
-    }
-
-    if (Settings.verboseLevel) {
-      console.log('maxDSensor', sensors.maxDistanceSensor, 'maxDAngle', targetAngle, 'maxDist', sensors.maxDistance);
-    }
+    let targetAngle = this.computeTargetAngle(sensors); //radians
 
     // alpha (a) = angle of longest sensor (... -20, -10, 0, 10, 20, ...)
     let rawSteeringAngleRad = -Math.atan(
-      PURE_PURSUIT_2L * Math.sin(targetAngleRad) /
+      PURE_PURSUIT_2L * Math.sin(targetAngle) /
       (PURE_PURSUIT_K * sensors.speed));
     let rawSteeringAngleDeg = rawSteeringAngleRad * DEG_PER_RAD;
 
@@ -228,10 +215,27 @@ export class PurePursuitDriver extends Driver {
     }
   }
 
-  computeRecoveryTargetAngle(sensors: SensorData, newTrackPos?: number): number {
+  // returns targetAngle in radians
+  computeTargetAngle(sensors: SensorData): number {
+  
+    let targetAngle = sensors.maxDistanceAngle * RAD_PER_DEG;
+
+    if (sensors.isOffTrack()) {
+      targetAngle = this.computeRecoveryTargetAngle(sensors);
+
+      if (Settings.verboseLevel) {
+        console.log('offtrack: left, targetAngleDeg: ', targetAngle * DEG_PER_RAD);
+      }
+    }
+
+    return targetAngle;
+  }
+
+  // returns targetAngle in radians
+  computeRecoveryTargetAngle(sensors: SensorData): number {
 
     let targetAngle = 0;
-    let trackPos = newTrackPos ? newTrackPos : sensors.trackPos;
+    let trackPos = sensors.trackPos;
 
     // clockwise Q1=[0,90), Q2=[90,+], Q3=[-90,-], Q4=[0,-90)
     let quadrant = 0;
